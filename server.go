@@ -6,10 +6,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/codegangsta/negroni"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
+	"github.com/nathan7/encoding-base32"
 )
 
 var dock *docker.Client
@@ -31,21 +33,27 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", build).Methods("POST")
+	r.HandleFunc("/{user}/{app}/{service}/push", build).Methods("POST")
 
 	n := negroni.Classic()
 	n.UseHandler(r)
 	n.Run(":3000")
 }
 
+var encoding = base32.MinEncoding
+
 func build(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	image := strings.Join([]string{vars["user"], vars["app"], vars["service"]}, "/")
+	imageEncoded := encoding.EncodeToString([]byte(image))
+
 	r, w := io.Pipe()
 	go func() {
 		w.CloseWithError(addBuildpack(w, req.Body))
 	}()
 
 	buildOpts := docker.BuildImageOptions{
-		Name:         "tutum.co/lsqio/app",
+		Name:         "tutum.co/lsqio/" + imageEncoded,
 		InputStream:  r,
 		OutputStream: os.Stdout,
 		NoCache:      true,
