@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/codegangsta/negroni"
@@ -78,12 +79,22 @@ func addBuildpack(dest io.Writer, src io.ReadCloser) error {
 	r := tar.NewReader(src)
 	w := tar.NewWriter(dest)
 
-	if err := copyTar(w, r); err != nil {
+	sawDockerfile := false
+	filter := func(hdr *tar.Header) bool {
+		if path.Clean(hdr.Name) == "Dockerfile" {
+			sawDockerfile = true
+		}
+		return true
+	}
+
+	if err := copyTar(w, r, filter); err != nil {
 		return err
 	}
 
-	if err := addFile(w, "packs/node/Dockerfile"); err != nil {
-		return err
+	if !sawDockerfile {
+		if err := addFile(w, "packs/node/Dockerfile"); err != nil {
+			return err
+		}
 	}
 
 	return w.Flush()

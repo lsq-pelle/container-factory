@@ -35,7 +35,7 @@ func addFile(w *tar.Writer, path string) error {
 	return nil
 }
 
-func copyTar(dest *tar.Writer, src *tar.Reader) error {
+func copyTar(dest *tar.Writer, src *tar.Reader, f func(*tar.Header) bool) error {
 	for {
 		hdr, err := src.Next()
 
@@ -43,6 +43,10 @@ func copyTar(dest *tar.Writer, src *tar.Reader) error {
 			break
 		} else if err != nil {
 			return err
+		}
+
+		if f != nil && !f(hdr) {
+			continue
 		}
 
 		if err := dest.WriteHeader(hdr); err != nil {
