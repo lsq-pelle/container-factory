@@ -54,10 +54,11 @@ func build(res http.ResponseWriter, req *http.Request) {
 	}()
 
 	buildOpts := docker.BuildImageOptions{
-		Name:         "tutum.co/lsqio/" + imageEncoded,
-		InputStream:  r,
-		OutputStream: os.Stdout,
-		NoCache:      true,
+		Name:          "tutum.co/lsqio/" + imageEncoded,
+		InputStream:   r,
+		OutputStream:  os.Stdout,
+		RawJSONStream: true,
+		NoCache:       true,
 	}
 
 	if err := dock.BuildImage(buildOpts); err != nil {
