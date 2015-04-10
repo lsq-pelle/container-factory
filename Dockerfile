@@ -1,6 +1,4 @@
-FROM progrium/busybox
-ADD container-factory /
+FROM golang:onbuild
 ADD packs /packs
 ADD .dockercfg /root/
 EXPOSE 3000
-ENTRYPOINT ["/container-factory"]
