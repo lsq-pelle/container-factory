@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/lsqio/container-factory",
+	"ImportPath": "github.com/LiveSqrd/container-factory",
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
