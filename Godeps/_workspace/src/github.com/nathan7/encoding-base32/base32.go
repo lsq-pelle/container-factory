@@ -54,7 +54,7 @@ var HexEncoding = NewEncoding(encodeHex, '=')
 
 // MinEncoding is a very basic charset base32 encoding that fits
 // in Docker image names.
-var MinEncoding = NewEncoding(encodeMin, '-')
+var MinEncoding = NewEncoding(encodeMin, '_')
 
 var removeNewlinesMapper = func(r rune) rune {
 	if r == '\r' || r == '\n' {
