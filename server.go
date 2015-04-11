@@ -71,9 +71,10 @@ func build(res http.ResponseWriter, req *http.Request) {
 	}
 
 	pushOpts := docker.PushImageOptions{
-		Name:         buildOpts.Name,
-		OutputStream: os.Stdout,
-		Registry:     "tutum.co",
+		Name:          buildOpts.Name,
+		OutputStream:  os.Stdout,
+		RawJSONStream: true,
+		Registry:      "tutum.co",
 	}
 
 	if err := dock.PushImage(pushOpts, dockerAuth.Configs[pushOpts.Registry]); err != nil {
