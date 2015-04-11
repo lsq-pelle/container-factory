@@ -3,6 +3,10 @@
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
+			"ImportPath": "github.com/LiveSqrd/thingamabob",
+			"Rev": "438b231a3cb577395eb4d5a89f61d8955d1f9001"
+		},
+		{
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.7.0-1-gfa58c5d",
 			"Rev": "fa58c5d59f0d2ce30a41a05c7e992b6b256242c5"
@@ -67,6 +71,16 @@
 		{
 			"ImportPath": "github.com/nathan7/encoding-base32",
 			"Rev": "b9672ea38e38010d8849903548f8d42727ec9086"
+		},
+		{
+			"ImportPath": "gopkg.in/bufio.v1",
+			"Comment": "v1",
+			"Rev": "567b2bfa514e796916c4747494d6ff5132a1dfce"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v2",
+			"Comment": "v2.3.2",
+			"Rev": "e6179049628164864e6e84e973cfb56335748dea"
 		}
 	]
 }

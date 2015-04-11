@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/tar"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -46,7 +47,11 @@ var encoding = base32.MinEncoding
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	image := strings.Join([]string{vars["user"], vars["app"], vars["service"]}, "/")
-	imageEncoded := encoding.EncodeToString([]byte(image))
+
+	imageId, err := nameRegistry.Id(image)
+	if err != nil {
+		panic(err)
+	}
 
 	r, w := io.Pipe()
 	go func() {
@@ -54,7 +59,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	}()
 
 	buildOpts := docker.BuildImageOptions{
-		Name:          "tutum.co/lsqio/" + imageEncoded,
+		Name:          fmt.Sprintf("tutum.co/lsqio/%d", imageId),
 		InputStream:   r,
 		OutputStream:  os.Stdout,
 		RawJSONStream: true,
