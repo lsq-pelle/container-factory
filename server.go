@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 
@@ -61,7 +60,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	buildOpts := docker.BuildImageOptions{
 		Name:          fmt.Sprintf("tutum.co/lsqio/%d", imageId),
 		InputStream:   r,
-		OutputStream:  os.Stdout,
+		OutputStream:  res,
 		RawJSONStream: true,
 		NoCache:       true,
 	}
@@ -72,7 +71,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 
 	pushOpts := docker.PushImageOptions{
 		Name:          buildOpts.Name,
-		OutputStream:  os.Stdout,
+		OutputStream:  res,
 		RawJSONStream: true,
 		Registry:      "tutum.co",
 	}
