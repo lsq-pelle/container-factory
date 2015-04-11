@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 
@@ -52,15 +53,18 @@ func build(res http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	r, w := io.Pipe()
-	go func() {
-		w.CloseWithError(addBuildpack(w, req.Body))
-	}()
+	buildStream := toReader(func(w io.Writer) error {
+		return addBuildpack(w, req.Body)
+	})
+
+	bodyFormatter := toWriter(func(r io.Reader) error {
+		return formatJSON(os.Stdout, r)
+	})
 
 	buildOpts := docker.BuildImageOptions{
 		Name:          fmt.Sprintf("tutum.co/lsqio/%d", imageId),
-		InputStream:   r,
-		OutputStream:  res,
+		InputStream:   buildStream,
+		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
 		NoCache:       true,
 	}
@@ -71,7 +75,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 
 	pushOpts := docker.PushImageOptions{
 		Name:          buildOpts.Name,
-		OutputStream:  res,
+		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
 		Registry:      "tutum.co",
 	}
