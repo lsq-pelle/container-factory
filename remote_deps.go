@@ -20,7 +20,8 @@ func init() {
 		}),
 		Bucket: "docker-image-names",
 	})
+
 	if err != nil {
-		log.Fatal("can't connect to Thingamabob", err)
+		log.Fatal("container-factory: can't connect to Thingamabob: ", err)
 	}
 }
