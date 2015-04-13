@@ -60,7 +60,7 @@ var idScript = newScript(`
 		return tonumber(id)
 	end
 
-	id = redis.call('LPUSH', list, name) - 1
+	id = redis.call('RPUSH', list, name) - 1
 	redis.call('HSET', index, name, id)
 
 	return id`)

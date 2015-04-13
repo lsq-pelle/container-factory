@@ -4,7 +4,7 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/LiveSqrd/thingamabob",
-			"Rev": "438b231a3cb577395eb4d5a89f61d8955d1f9001"
+			"Rev": "5213526477f5b7feb3a8b3540738ca5025d61571"
 		},
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
