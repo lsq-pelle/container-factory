@@ -2,13 +2,11 @@ package main
 
 import (
 	"archive/tar"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/codegangsta/negroni"
 	"github.com/fsouza/go-dockerclient"
@@ -25,17 +23,13 @@ func main() {
 		log.Fatal("couldn't initialise Docker", err)
 	}
 
-	if dockerAuth, err = docker.NewAuthConfigurationsFromDockerCfg(); err != nil || dockerAuth == nil {
-		log.Fatal("couldn't initialise Docker auth", err)
-	}
-
 	if err := dock.Ping(); err != nil {
 		log.Fatal("couldn't ping Docker", err)
 	}
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/{user}/{app}/{service}/push", build).Methods("POST")
+	r.HandleFunc("/build", build).Methods("POST")
 
 	n := negroni.Classic()
 	n.UseHandler(r)
@@ -46,12 +40,6 @@ var encoding = base32.MinEncoding
 
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	image := strings.Join([]string{vars["user"], vars["app"], vars["service"]}, "/")
-
-	imageId, err := nameRegistry.Id(image)
-	if err != nil {
-		panic(err)
-	}
 
 	buildStream := toReader(func(w io.Writer) error {
 		return addBuildpack(w, req.Body)
@@ -62,7 +50,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	})
 
 	buildOpts := docker.BuildImageOptions{
-		Name:          fmt.Sprintf("tutum.co/lsqio/%d", imageId),
+		Name:          imageName,
 		InputStream:   buildStream,
 		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
