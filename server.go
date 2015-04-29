@@ -40,6 +40,12 @@ var encoding = base32.MinEncoding
 
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+	imageName := vars["image"]
+
+	authConfig, err := authFromHeaders(req.Header)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	buildStream := toReader(func(w io.Writer) error {
 		return addBuildpack(w, req.Body)
@@ -65,10 +71,9 @@ func build(res http.ResponseWriter, req *http.Request) {
 		Name:          buildOpts.Name,
 		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
-		Registry:      "tutum.co",
 	}
 
-	if err := dock.PushImage(pushOpts, dockerAuth.Configs[pushOpts.Registry]); err != nil {
+	if err := dock.PushImage(pushOpts, authConfig); err != nil {
 		log.Fatal(err)
 	}
 }

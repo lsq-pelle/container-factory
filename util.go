@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
+
+	"github.com/fsouza/go-dockerclient"
 )
 
 func toReader(f func(io.Writer) error) io.Reader {
@@ -44,4 +47,21 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 			return
 		}
 	}
+}
+
+func authFromHeaders(headers map[string][]string) (auth docker.AuthConfiguration, err error) {
+	for _, header := range headers["X-Registry-Auth"] {
+		data, err := base64.URLEncoding.DecodeString(header)
+		if err != nil {
+			return auth, err
+		}
+
+		if err := json.Unmarshal(data, &auth); err != nil {
+			return auth, err
+		}
+
+		return auth, nil
+	}
+
+	return
 }
