@@ -44,7 +44,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 
 	authConfig, err := authFromHeaders(req.Header)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	buildStream := toReader(func(w io.Writer) error {
@@ -64,7 +64,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if err := dock.BuildImage(buildOpts); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	pushOpts := docker.PushImageOptions{
@@ -74,7 +74,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if err := dock.PushImage(pushOpts, authConfig); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }
 
