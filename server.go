@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"path"
 
 	"github.com/codegangsta/negroni"
@@ -52,7 +51,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	})
 
 	bodyFormatter := toWriter(func(r io.Reader) error {
-		return formatJSON(os.Stdout, r)
+		return formatJSON(res, r)
 	})
 
 	buildOpts := docker.BuildImageOptions{
