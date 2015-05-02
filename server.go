@@ -61,7 +61,13 @@ func main() {
 	r.HandleFunc("/build", build).Methods("POST")
 
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":3000", nil))
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func build(res http.ResponseWriter, req *http.Request) {
