@@ -63,10 +63,6 @@
 		{
 			"ImportPath": "github.com/gorilla/mux",
 			"Rev": "8096f47503459bcc74d1f4c487b7e6e42e5746b5"
-		},
-		{
-			"ImportPath": "github.com/nathan7/encoding-base32",
-			"Rev": "b9672ea38e38010d8849903548f8d42727ec9086"
 		}
 	]
 }

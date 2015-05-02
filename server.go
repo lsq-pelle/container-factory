@@ -10,7 +10,6 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
-	"github.com/nathan7/encoding-base32"
 )
 
 var dock *docker.Client
@@ -34,8 +33,6 @@ func main() {
 	n.UseHandler(r)
 	n.Run(":3000")
 }
-
-var encoding = base32.MinEncoding
 
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := req.URL.Query()
