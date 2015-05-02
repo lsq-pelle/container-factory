@@ -39,7 +39,7 @@ var encoding = base32.MinEncoding
 
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	imageName := vars["image"]
+	t := vars["t"]
 
 	authConfig, err := authFromHeaders(req.Header)
 	if err != nil {
@@ -55,7 +55,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 	})
 
 	buildOpts := docker.BuildImageOptions{
-		Name:          imageName,
+		Name:          t,
 		InputStream:   buildStream,
 		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
