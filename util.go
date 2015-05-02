@@ -46,6 +46,11 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 		if err != nil {
 			return
 		}
+
+		_, err = dst.Write([]byte("\n"))
+		if err != nil {
+			return
+		}
 	}
 }
 
