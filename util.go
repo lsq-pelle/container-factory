@@ -34,21 +34,18 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 	for {
 		var data interface{}
 
-		err = decoder.Decode(&data)
-		if err != nil {
+		if err = decoder.Decode(&data); err != nil {
 			if err == io.EOF {
 				err = nil
 			}
 			return
 		}
 
-		err = encoder.Encode(&data)
-		if err != nil {
+		if err = encoder.Encode(&data); err != nil {
 			return
 		}
 
-		_, err = dst.Write([]byte("\n"))
-		if err != nil {
+		if _, err = dst.Write([]byte("\n")); err != nil {
 			return
 		}
 	}
