@@ -5,7 +5,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
@@ -15,8 +17,38 @@ var dock *docker.Client
 var dockerAuth *docker.AuthConfigurations
 
 func main() {
+	var (
+		dockerHost      = os.Getenv("DOCKER_HOST")
+		dockerCertPath  = os.Getenv("DOCKER_CERT_PATH")
+		dockerTlsVerify = os.Getenv("DOCKER_TLS_VERIFY") != ""
+	)
+
+	var (
+		defaultCaFile   = "ca.pem"
+		defaultKeyFile  = "key.pem"
+		defaultCertFile = "cert.pem"
+	)
+
+	if dockerCertPath == "" {
+		dockerCertPath = filepath.Join(os.Getenv("HOME"), ".docker")
+	}
+
+	if dockerHost == "" {
+		dockerHost = "unix:///var/run/docker.sock"
+	}
+
 	var err error
-	if dock, err = docker.NewClient("unix:///var/run/docker.sock"); err != nil || dock == nil {
+
+	if dockerTlsVerify {
+		dock, err = docker.NewTLSClient(dockerHost,
+			filepath.Join(dockerCertPath, defaultCertFile),
+			filepath.Join(dockerCertPath, defaultKeyFile),
+			filepath.Join(dockerCertPath, defaultCaFile))
+	} else {
+		dock, err = docker.NewClient(dockerHost)
+	}
+
+	if err != nil || dock == nil {
 		log.Fatal("couldn't initialise Docker", err)
 	}
 
