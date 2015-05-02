@@ -8,11 +8,6 @@
 			"Rev": "fa58c5d59f0d2ce30a41a05c7e992b6b256242c5"
 		},
 		{
-			"ImportPath": "github.com/codegangsta/negroni",
-			"Comment": "v0.1-62-g8d75e11",
-			"Rev": "8d75e11374a1928608c906fe745b538483e7aeb2"
-		},
-		{
 			"ImportPath": "github.com/docker/docker/pkg/archive",
 			"Comment": "v1.4.1-2102-g121de9e",
 			"Rev": "121de9e4e3e781a9f43edb1b062beef9f9a9d6db"

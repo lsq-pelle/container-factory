@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/codegangsta/negroni"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
 )
@@ -29,9 +28,8 @@ func main() {
 
 	r.HandleFunc("/build", build).Methods("POST")
 
-	n := negroni.Classic()
-	n.UseHandler(r)
-	n.Run(":3000")
+	http.Handle("/", r)
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }
 
 func build(res http.ResponseWriter, req *http.Request) {
