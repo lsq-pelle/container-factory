@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"io"
+	"net/http"
 
 	"github.com/fsouza/go-dockerclient"
 )
@@ -31,6 +32,8 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 	decoder := json.NewDecoder(src)
 	encoder := json.NewEncoder(dst)
 
+	flusher, _ := dst.(http.Flusher)
+
 	for {
 		var data interface{}
 
@@ -47,6 +50,10 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 
 		if _, err = dst.Write([]byte("\n")); err != nil {
 			return
+		}
+
+		if flusher != nil {
+			flusher.Flush()
 		}
 	}
 }
