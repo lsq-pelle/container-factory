@@ -48,10 +48,6 @@ func formatJSON(dst io.Writer, src io.Reader) (err error) {
 			return
 		}
 
-		if _, err = dst.Write([]byte("\n")); err != nil {
-			return
-		}
-
 		if flusher != nil {
 			flusher.Flush()
 		}
