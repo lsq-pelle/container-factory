@@ -74,6 +74,11 @@ func main() {
 func build(res http.ResponseWriter, req *http.Request) {
 	vars := req.URL.Query()
 
+	authConfigs, err := authsFromHeaders(req.Header)
+	if err != nil {
+		panic(err)
+	}
+
 	authConfig, err := authFromHeaders(req.Header)
 	if err != nil {
 		panic(err)
@@ -93,6 +98,7 @@ func build(res http.ResponseWriter, req *http.Request) {
 		OutputStream:  bodyFormatter,
 		RawJSONStream: true,
 		NoCache:       true,
+		AuthConfigs:   authConfigs,
 	}
 
 	if err := dock.BuildImage(buildOpts); err != nil {

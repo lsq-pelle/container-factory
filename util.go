@@ -70,3 +70,20 @@ func authFromHeaders(headers map[string][]string) (auth docker.AuthConfiguration
 
 	return
 }
+
+func authsFromHeaders(headers map[string][]string) (auth docker.AuthConfigurations, err error) {
+	for _, header := range headers["X-Registry-Config"] {
+		data, err := base64.URLEncoding.DecodeString(header)
+		if err != nil {
+			return auth, err
+		}
+
+		if err := json.Unmarshal(data, &auth); err != nil {
+			return auth, err
+		}
+
+		return auth, nil
+	}
+
+	return
+}
