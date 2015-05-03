@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"fmt"
 
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
@@ -21,6 +22,7 @@ func main() {
 		dockerHost      = os.Getenv("DOCKER_HOST")
 		dockerCertPath  = os.Getenv("DOCKER_CERT_PATH")
 		dockerTlsVerify = os.Getenv("DOCKER_TLS_VERIFY") != ""
+		PORT 		= os.Getenv("PORT")
 	)
 
 	var (
@@ -35,6 +37,10 @@ func main() {
 
 	if dockerHost == "" {
 		dockerHost = "unix:///var/run/docker.sock"
+	}
+
+	if PORT == "" {
+		PORT = "3000"
 	}
 
 	var err error
@@ -59,9 +65,15 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/build", build).Methods("POST")
+	r.HandleFunc("/health",health).Methods("GET")
 
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	fmt.Printf("listening on port "+PORT+"\n")
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
+}
+
+func health(res http.ResponseWriter, req *http.Request){
+        io.WriteString(res, "ok")
 }
 
 func build(res http.ResponseWriter, req *http.Request) {
